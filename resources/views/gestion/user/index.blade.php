@@ -55,15 +55,16 @@
                                         <span class="badge bg-danger">Sin roles asignados</span>
                                     @endforelse
                                 </td>
+                                
                                 <td>{{$user->phone}}</td>
                                 <td>{{$user->address}}</td>
                                 <td>{{$user->fecha_nacimiento}}</td>
                                 <td>
-                                    @if(auth()->user()->img)
-                                        <img src="{{ asset('storage/' . auth()->user()->img) }}" alt="Imagen del usuario">
-                                    @else
-                                        <img src="{{ asset('default-avatar.png') }}" alt="Avatar por defecto">
-                                    @endif
+                                    @if (file_exists(public_path('storage/' . $user->img)))
+                                     <img src="{{ asset('storage/' . $user->img) }}" alt="{{$user->name}}" width="50">  
+                                   @else
+                                    <img src="{{ asset('assets/images/users/deafult-user.jpg') }}" alt="{{$user->name}}" width="50">
+                                   @endif
                                 </td>
                                 
                                 
@@ -73,10 +74,10 @@
                                             <i class="ri-more-fill align-middle"></i>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">
-                                            <li><a href="#!" class="dropdown-item"><i class="ri-eye-fill align-bottom me-2 text-muted"></i> Ver</a></li>
+                                            <li><a href="#!" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#verUsuario-{{$user->id}}"><i class="ri-eye-fill align-bottom me-2 text-muted"></i> Ver</a></li>
                                             <li><a href="" class="dropdown-item edit-item-btn" data-bs-toggle="modal" data-bs-target="#editarUsuario-{{$user->id}}"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Editar</a></li>
                                             <li>
-                                                <a class="dropdown-item remove-item-btn">
+                                                <a class="dropdown-item remove-item-btn" data-bs-toggle="modal" data-bs-target="#eliminarUsuario-{{$user->id}}">
                                                     <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Eliminar
                                                 </a>
                                             </li>
@@ -84,7 +85,30 @@
                                     </div>
                                 </td>
                             </tr>
+                            @include('gestion.user.show')
                             @include('gestion.user.edit')
+                             <!-- Modal -->
+                    <div class="modal fade" id="eliminarUsuario-{{$user->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Mensaje de confirmación</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    {{ $user->name }}
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                    <form action="{{ route('users.destroy',['user'=>$user->id]) }}" method="post">
+                                        @method('DELETE')
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger">Confirmar</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                             @empty
                                 <span>No hay datos...</span>
                             @endforelse

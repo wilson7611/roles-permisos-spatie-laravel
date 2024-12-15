@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 
@@ -60,11 +61,24 @@ class AsignarRolController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $user = User::find($id);
-
-        $user->roles()->sync($request->roles);
-
-        return redirect()->route('asignar-rol', $user);
+        try {
+            // Buscar el usuario
+            $user = User::findOrFail($id); // Utiliza findOrFail para lanzar una excepción si no se encuentra
+    
+            // Sincronizar roles
+            $user->roles()->sync($request->roles);
+    
+            // Redirigir con mensaje de éxito
+            return redirect()
+                ->route('asignar-rol', $user)
+                ->with('success', 'Roles asignados correctamente al usuario.');
+    
+        } catch (Exception $e) {
+            // Redirigir con mensaje de error
+            return redirect()
+                ->route('asignar-rol', $id)
+                ->with('error', 'Ocurrió un error al asignar los roles: ' . $e->getMessage());
+        }
     }
 
     /**

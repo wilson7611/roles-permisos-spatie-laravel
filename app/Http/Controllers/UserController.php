@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -18,7 +22,7 @@ class UserController extends Controller
     {
         $roles = Role::all();
         $users = User::all();
-
+        
         return view('gestion.user.index', compact('users', 'roles'));
     }
 
@@ -98,9 +102,16 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit( $id)
     {
-        //
+        // Obtén al usuario que quieres editar
+    $user = User::findOrFail($id);
+
+    // Obtén todos los roles disponibles
+    $roles = Role::all();
+
+    // Pasar el usuario y los roles a la vista
+    return view('users.edit', compact('user', 'roles'));
     }
 
     /**
@@ -108,14 +119,76 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $user = User::findOrFail($id); // Encuentra al usuario por ID
+
+    // Validación de los datos (ajustar según necesidades)
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email,' . $user->id,
+        'ci' => 'required|string|max:255',
+        'phone' => 'required|string|max:255',
+        'address' => 'required|string|max:255',
+        'fecha_nacimiento' => 'required|date',
+        'password' => 'nullable|confirmed|min:8', // Contraseña confirmada y opcional
+        'img' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Validación de imagen
+    ]);
+
+    // Actualización de datos básicos
+    $user->name = $request->input('name');
+    $user->ci = $request->input('ci');
+    $user->email = $request->input('email');
+    $user->phone = $request->input('phone');
+    $user->address = $request->input('address');
+    $user->fecha_nacimiento = $request->input('fecha_nacimiento');
+
+    // Si se proporciona una nueva contraseña, la actualizamos
+    if ($request->filled('password')) {
+        $user->password = bcrypt($request->input('password'));
+    }
+
+    // Manejo de imagen
+    if ($request->hasFile('img')) {
+        // Eliminar la imagen anterior si existe
+        if ($user->img && file_exists(public_path('storage/' . $user->img))) {
+            unlink(public_path('storage/' . $user->img));
+        }
+
+        // Subir la nueva imagen
+        $imageName = $request->file('img')->store('users', 'public'); // Se guarda en el disco 'public'
+        $user->img = $imageName; // Asignamos el nombre de la imagen al usuario
+    }
+
+    // Actualización de roles
+    if ($request->has('roles')) {
+        $user->roles()->sync($request->input('roles')); // Sincronizar los roles
+    }
+
+    // Guardamos los cambios
+    $user->save();
+
+    return redirect()->route('users.index')->with('success', 'Usuario actualizado correctamente.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        try {
+            // Buscar el usuario
+            $user = User::findOrFail($id);
+    
+            // Eliminar usuario
+            $user->delete();
+    
+            // Retornar respuesta de éxito
+            return redirect()->route('users.index')->with('success', 'Usuario eliminado exitosamente.');
+        } catch (\Exception $e) {
+            // Registrar el error en los logs
+            Log::error('Error al eliminar usuario: ' . $e->getMessage());
+    
+            // Retornar con mensaje de error
+            return redirect()->route('users.index')->with('error', 'Hubo un error al eliminar al usuario.');
+        }
     }
 }
