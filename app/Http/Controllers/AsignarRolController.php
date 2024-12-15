@@ -14,7 +14,7 @@ class AsignarRolController extends Controller
     public function index()
     {
         $users = User::all();
-        $roles =Role::all();
+        $roles = Role::all();
         return view('gestion.user.role', compact('users', 'roles'));
     }
 

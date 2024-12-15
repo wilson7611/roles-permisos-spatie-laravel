@@ -59,7 +59,41 @@
                                     </div>
                                 </td>
                             </tr>
-                           @include('gestion.roles.userRol')
+                            <!-- Grids in modals -->
+
+</div>
+
+    <div class="modal fade" id="asignarRol-{{$user->id}}" tabindex="-1" aria-labelledby="exampleModalgridLabel" aria-modal="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="asignarRol-{{$user->id}}">{{$user->name}}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form action="{{ route('asignar', $user) }}" method="POST">
+                @csrf
+                @method('PUT')
+                @foreach ($roles as $role)
+                    <div>
+                        <label for="role-{{ $role->id }}">
+                            <input 
+                                type="checkbox" 
+                                name="roles[]" 
+                                id="role-{{ $role->id }}" 
+                                value="{{ $role->id }}" 
+                                {{ $user->roles->contains($role->id) ? 'checked' : '' }}
+                            >
+                            {{ $role->name }}
+                        </label>
+                    </div>
+                @endforeach
+                <button type="submit" class="btn btn-primary">Asignar Rol</button>
+            </form>
+        </div>
+        </div>
+        </div>
+        </div>
                             @empty
                                 <span>No hay datos...</span>
                             @endforelse
@@ -69,5 +103,4 @@
             </div>
         </div>
     </div>
-</div>
 @endsection
