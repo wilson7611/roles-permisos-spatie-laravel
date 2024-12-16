@@ -8,9 +8,10 @@ use Illuminate\Support\Facades\Validator;
 
 class ClientController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct()
+    {
+        //$this->middleware('can: Ver Cliente')->only('index');
+    }
     public function index()
     {
         $clients = Client::all();

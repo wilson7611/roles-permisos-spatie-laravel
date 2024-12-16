@@ -67,9 +67,11 @@
                                 <a href="#sidebarEcommerce" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarEcommerce">Personas                                </a>
                                 <div class="collapse menu-dropdown" id="sidebarEcommerce">
                                     <ul class="nav nav-sm flex-column">
+                                        @can('Ver Cliente')
                                         <li class="nav-item">
                                             <a href="{{route('clients.index')}}" class="nav-link">Clientes</a>
                                         </li>
+                                        @endcan
                                         <li class="nav-item">
                                             <a href="apps-ecommerce-product-details" class="nav-link">Proveedores</a>
                                         </li>

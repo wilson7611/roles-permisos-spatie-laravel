@@ -17,6 +17,9 @@
         </div>
     </div>
 </div>
+@can('Ver Cliente')
+    
+
 <div class="row">
     <div class="row">
         <div class="col-lg-12">
@@ -26,7 +29,9 @@
                 </div>
                 <div class="card-body">
                     @include('gestion.clients.create')
-                    <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
+                    
+                    <table id="buttons-datatables" class="display table table-bordered" style="width:100%">  
+                    
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -35,9 +40,10 @@
                                 <th>Email</th>
                                 <th>Telefono</th>
                                 <th>Direccion</th>
+                                @can('Crear Cliente')
                                 <th><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#nuevoCliente">
                                     Nuevo
-                                    </button></th>
+                                    </button></th>@endcan
                             </tr>
                         </thead>
                         <tbody>
@@ -55,13 +61,19 @@
                                             <i class="ri-more-fill align-middle"></i>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">
+                                            @can('Editar Cliente')
+                                                
+                                            
                                             {{-- <li><a href="#!" class="dropdown-item"><i class="ri-eye-fill align-bottom me-2 text-muted"></i> Ver</a></li> --}}
                                             <li><button type="button" class="dropdown-item edit-item-btn" data-bs-toggle="modal" data-bs-target="#editarClient-{{$client->id}}"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Editar</a></li>
+                                            @endcan
+                                            @can('Eliminar Cliente')
                                             <li>
                                                 <button type="button" class="dropdown-item remove-item-btn" data-bs-toggle="modal" data-bs-target="#eliminarClient-{{$client->id}}">
                                                     <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Eliminar
                                                 </button>
                                             </li>
+                                            @endcan
                                         </ul>
                                     </div>
                                 </td>
@@ -99,4 +111,5 @@
         </div>
     </div>
 </div>
+@endcan
 @endsection
