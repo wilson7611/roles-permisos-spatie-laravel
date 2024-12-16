@@ -30,3 +30,7 @@ Route::resource('user', AsignarRolController::class);
 
 Route::resource('users', UserController::class);
 
+Route::get('/update-rol/{rol}', [RoleController::class, 'updaterol'])->name('update-rol');
+Route::put('/update-rol/{rol}', [RoleController::class, 'updaterol'])->name('update-rol');
+
+Route::put('roles/updaterol/{role}', [RoleController::class, 'updaterol'])->name('roles.updaterol');

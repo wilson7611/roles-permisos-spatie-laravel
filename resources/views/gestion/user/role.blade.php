@@ -41,23 +41,8 @@
                             <tr>
                                 <td>{{$user->id}}</td>
                                 <td>{{$user->name}}</td>
-                                <td>
-                                    <div class="dropdown d-inline-block">
-                                        <button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="ri-more-fill align-middle"></i>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-end">
-                                            <li><a href="#!" class="dropdown-item"><i class="ri-eye-fill align-bottom me-2 text-muted"></i> Ver</a></li>
-                                            <li>
-                                                <a href="{{route('user.edit', $user)}}" class="dropdown-item edit-item-btn"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Editar</a></li>
-                                                <button class="dropdown-item edit-item-btn" data-bs-toggle="modal" data-bs-target="#asignarRol-{{$user->id}}">Asignar</button>
-                                            <li>
-                                                <a class="dropdown-item remove-item-btn">
-                                                    <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Eliminar
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                <td>    
+                                     <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#asignarRol-{{$user->id}}"><i class="ri-pencil-fill align-bottom me-2 text-white"></i>Asignar Rol</button>   
                                 </td>
                             </tr>
                             <!-- Grids in modals -->

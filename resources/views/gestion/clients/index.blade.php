@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+@include('layouts.alerts.alert')
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
@@ -54,17 +55,40 @@
                                             <i class="ri-more-fill align-middle"></i>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">
-                                            <li><a href="#!" class="dropdown-item"><i class="ri-eye-fill align-bottom me-2 text-muted"></i> Ver</a></li>
-                                            <li><a class="dropdown-item edit-item-btn"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Editar</a></li>
+                                            {{-- <li><a href="#!" class="dropdown-item"><i class="ri-eye-fill align-bottom me-2 text-muted"></i> Ver</a></li> --}}
+                                            <li><button type="button" class="dropdown-item edit-item-btn" data-bs-toggle="modal" data-bs-target="#editarClient-{{$client->id}}"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Editar</a></li>
                                             <li>
-                                                <a class="dropdown-item remove-item-btn">
+                                                <button type="button" class="dropdown-item remove-item-btn" data-bs-toggle="modal" data-bs-target="#eliminarClient-{{$client->id}}">
                                                     <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Eliminar
-                                                </a>
+                                                </button>
                                             </li>
                                         </ul>
                                     </div>
                                 </td>
                             </tr>
+                            @include('gestion.clients.edit')
+
+                            <div class="modal fade" id="eliminarClient-{{$client->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Mensaje de confirmación</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            {{ $client->name }}
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                            <form action="{{ route('clients.destroy',['client'=>$client->id]) }}" method="post">
+                                                @method('DELETE')
+                                                @csrf
+                                                <button type="submit" class="btn btn-danger">Confirmar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             @empty
                                 <span>No hay datos...</span>
                             @endforelse

@@ -1,21 +1,20 @@
-<!-- Grids in modals -->
-
-    <div class="modal fade" id="dynamicModal" tabindex="-1" aria-labelledby="dynamicModalLabel" aria-modal="true">
-    <div class="modal-dialog">
+<div class="modal fade" id="editarPermiso-{{$permiso->id}}" tabindex="-1" aria-labelledby="exampleModalgridLabel" aria-modal="true">
+    <div class="modal-dialog ">
     <div class="modal-content">
     <div class="modal-header">
-    <h5 class="modal-title" id="dynamicModalLabel">Editar Rol</h5>
+    <h5 class="modal-title" id="editarPermiso-{{$permiso->id}}">Editar Permiso</h5>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
     <div class="modal-body">
-    <form action="{{route('update-rol', $role)}}" method="post">
+    <form action="{{route('permisos.update', $permiso->id)}}" method="post" enctype="multipart/form-data">
         @csrf
         @method('PUT')
     <div class="row g-3">
+       
         <div class="col-xxl-12">
             <div>
-                <label for="firstName" class="form-label">Nombre Rol</label>
-                <input type="text" class="form-control" id="firstName" name="name" value="{{$role->name}}">
+                <label for="lastName" class="form-label">Nombre</label>
+                <input type="text" class="form-control" name="name" value="{{$permiso->name}}" placeholder="Introducir Nombre Completo">
             </div>
         </div><!--end col-->
        

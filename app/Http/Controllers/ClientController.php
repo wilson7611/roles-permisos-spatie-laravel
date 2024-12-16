@@ -44,7 +44,7 @@ class ClientController extends Controller
 
         try {
             Client::create($request->all());
-            return redirect()->route('gestion.clients.index')->with('success', 'Cliente creado con éxito');
+            return redirect()->route('clients.index')->with('success', 'Cliente creado con éxito');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Error al guardar el cliente: ' . $e->getMessage()])->withInput();
         }
@@ -71,14 +71,41 @@ class ClientController extends Controller
      */
     public function update(Request $request, Client $client)
     {
-        //
+        try {
+            // Validar la solicitud
+            $validatedData = $request->validate([
+                'ci' => 'required|max:12',
+                'name' => 'required|string|max:255|unique:roles,name,' . $client->id,
+                'email' => 'required|email|max:50',
+                'phone' => 'nullable|max:18',
+                'address' => 'nullable|max:50',
+            ]);
+    
+            // Actualizar el rol con asignación masiva
+            $client->update($validatedData);
+    
+            // Redirigir con mensaje de éxito
+            return redirect()->route('clients.index')->with('success', 'Cliente actualizado correctamente.');
+        } catch (\Exception $e) {
+            // Manejo de errores
+            return redirect()->back()->with('error', 'Ocurrió un error al actualizar el Client: ' . $e->getMessage());
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Client $client)
+    public function destroy($id)
     {
-        //
+        try {
+            $client = Client::find($id);
+            if ($client) {
+                $client->delete();
+            }
+            return redirect()->route('clients.index')->with('success', 'Cliente eliminado con exito');
+        } catch (\Exception $e) {
+            return redirect()->route('clients.index')->with('error', 'Error al eliminar Cliente', $e->getMessage());
+        }
+        
     }
 }

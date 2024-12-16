@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -30,14 +31,17 @@ class RoleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Role $role)
     {
         try {
-            $role = Role::create(['name' => $request->input('name')]);
-
-            return redirect()->route('roles.index')->with('success', 'Rol Creado Existosamente');    
-        } catch (\Exception $e) {
-            return back()->withErrors('error', 'error al registrar rol', $e->getMessage());
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255|unique:roles,name,' . $role->id,
+            ]);
+            $role->name = $validatedData['name'];
+            $role->save();
+            return redirect()->route('roles.index')->with('success', 'Permiso creado con éxito');            
+        }catch(Exception $e){
+            return redirect()->route('roles.index')->with('error', 'No se pudo crear el permiso', $e->getMessage());
         }
         
     }
@@ -78,8 +82,39 @@ class RoleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy( $id)
     {
-        //
+        try {
+            $role = Role::find($id);
+            $role->delete();
+            return redirect()->route('roles.index')->with('success', 'Rol Eliminado Exitosamente');
+        }catch(Exception $e){
+            return redirect()->route('roles.index')->with('error', 'Erro al eliminar Rol', $e->getMessage());
+        }
     }
+   public function updaterol(Request $request, Role $role)
+   {
+    try {
+        // Validar la solicitud
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255|unique:roles,name,' . $role->id,
+        ]);
+
+        // Actualizar el rol con asignación masiva
+        $role->update($validatedData);
+
+        // Sincronizar permisos (si se envían)
+        if ($request->has('permissions')) {
+            $role->permissions()->sync($request->permissions);
+        } else {
+            $role->permissions()->detach(); // Eliminar permisos si no se envía ninguno
+        }
+
+        // Redirigir con mensaje de éxito
+        return redirect()->route('roles.index')->with('success', 'Rol actualizado correctamente.');
+    } catch (\Exception $e) {
+        // Manejo de errores
+        return redirect()->back()->with('error', 'Ocurrió un error al actualizar el rol: ' . $e->getMessage());
+    }
+   }
 }

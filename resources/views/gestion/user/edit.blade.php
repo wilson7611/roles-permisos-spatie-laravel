@@ -81,7 +81,11 @@
         <div class="col-xxl-4">
             <div>
                 <label for="passwordInput" class="form-label">Imagen Actual</label>
-                <img src="{{asset('assets/images/brands/bitbucket.png')}}" alt="" class="img-rounded" width="50">
+                @if (file_exists(public_path('storage/' . $user->img)))
+                    <img src="{{ asset('storage/' . $user->img) }}" alt="{{$user->name}}" width="150">  
+                @else
+                    <img src="{{ asset('assets/images/users/deafult-user.jpg') }}" alt="{{$user->name}}" width="150">
+                @endif
             </div>
         </div><!--end col-->
         <div class="col-xxl-4">

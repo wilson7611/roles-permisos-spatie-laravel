@@ -2,6 +2,8 @@
 
 @section('content')
 @include('layouts.alerts.alert')
+
+   
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
@@ -38,6 +40,7 @@
                         </thead>
                         <tbody>
                             @forelse ($roles as $role)
+                            @include('gestion.roles.editarRol')
                             <tr>
                                 <td>{{$role->id}}</td>
                                 <td>{{$role->name}}</td>
@@ -49,43 +52,39 @@
                                         <ul class="dropdown-menu dropdown-menu-end">
                                             
                                             <li>
-                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editarRoles-{{$role->id}}" data-bs-whatever="{{$role->name}}">Editar Roles</button>
+                                                <button 
+                                                type="button" 
+                                                data-id="{{$role->id}}" 
+                                                data-name="{{$role->name}}" 
+                                                data-action="edit"
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#dynamicModal" 
+                                                class="dropdown-item edit-item-btn open-modal"
+                                                ><i class="ri-pencil-fill align-bottom me-2 text-muted"></i>Editar</button>
     
                                             </li>
                                             <li>
-                                                <button data-bs-toggle="modal" data-bs-target="#asignarPermiso-{{$role->id}}" class="dropdown-item edit-item-btn"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i>Asignar Permisos</button>
+                                                <button type="button" data-bs-toggle="modal" data-bs-target="#asignarPermiso-{{$role->id}}" class="dropdown-item edit-item-btn"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i>Asignar Permisos</button>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item remove-item-btn" data-bs-toggle="modal" data-bs-target="#eliminarRol-{{$role->id}}">
+                                                <button 
+                                                class="dropdown-item remove-item-btn open-modal" 
+                                                type="button"  
+                                                data-id="{{$role->id}}" 
+                                                data-name="{{$role->name}}" 
+                                                data-action="delete"
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#dynamicModal"
+                                                >
                                                     <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Eliminar
-                                                </a>
+                                                </button>
                                             </li>
                                         </ul>
                                     </div>
                                 </td>
                             </tr>
                             @include('gestion.roles.edit')
-                            
-                            <div class="modal fade" id="eliminarRol-{{$role->id}}" tabindex="-1" aria-labelledby="eliminarRol" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h1 class="modal-title fs-5" id="eliminarRol-{{$role->id}}">Mensaje de confirmación</h1>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            {{ $role->name }}
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                            <form action="{{ route('roles.destroy',['role'=>$role->id]) }}" method="post">
-                                                @method('DELETE')
-                                                @csrf
-                                                <button type="submit" class="btn btn-danger">Confirmar</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
+                           
                             @empty
                                 <span>No hay datos...</span>
                             @endforelse
@@ -96,4 +95,53 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('dynamicModal');
+    const modalTitle = modal.querySelector('.modal-title');
+    const modalBody = modal.querySelector('.modal-body');
+    const modalFooter = modal.querySelector('.modal-footer');
+
+    document.querySelectorAll('.open-modal').forEach(button => {
+        button.addEventListener('click', function () {
+            const action = this.dataset.action;
+            const id = this.dataset.id;
+            const name = this.dataset.name;
+
+            // Configurar el contenido del modal según la acción
+            if (action === 'edit') {
+                modalTitle.textContent = `Editar Rol: ${name}`;
+                modalBody.innerHTML = `
+                    <form action="/roles/updaterol/${id}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="mb-3">
+                            <label for="roleName" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="roleName" name="name" value="${name}">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </form>
+                `;
+            }
+            else if (action === 'delete') {
+                modalTitle.textContent = `Eliminar Rol: ${name}`;
+                modalBody.innerHTML = `
+                    <p>¿Estás seguro de que deseas eliminar el rol <strong>${name}</strong>?</p>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <form action="/roles/${id}" method="POST" style="display: inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                        
+                    </form>
+                `;
+                modalFooter.innerHTML = `
+                    
+                `;
+            }
+        });
+    });
+});
+
+</script>
 @endsection
