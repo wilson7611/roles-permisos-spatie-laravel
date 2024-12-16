@@ -67,29 +67,32 @@
                                 <a href="#sidebarEcommerce" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarEcommerce">Personas                                </a>
                                 <div class="collapse menu-dropdown" id="sidebarEcommerce">
                                     <ul class="nav nav-sm flex-column">
-                                        @can('Ver Cliente')
+                                        
                                         <li class="nav-item">
                                             <a href="{{route('clients.index')}}" class="nav-link">Clientes</a>
                                         </li>
-                                        @endcan
+                                        
                                         <li class="nav-item">
-                                            <a href="apps-ecommerce-product-details" class="nav-link">Proveedores</a>
+                                            <a href="{{route('supliers.index')}}" class="nav-link">Proveedores</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{route('staff.index')}}" class="nav-link">Personal</a>
                                         </li>
                                     </ul>
                                 </div>
                             </li>
                             <li class="nav-item">
-                                <a href="#sidebarProjects" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarProjects">Projects                                </a>
+                                <a href="#sidebarProjects" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarProjects">Inventario                                </a>
                                 <div class="collapse menu-dropdown" id="sidebarProjects">
                                     <ul class="nav nav-sm flex-column">
                                         <li class="nav-item">
-                                            <a href="apps-projects-list" class="nav-link">List</a>
+                                            <a href="{{route('categories.index')}}" class="nav-link">Categorias</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a href="apps-projects-overview" class="nav-link">Overview</a>
+                                            <a href="{{route('products.index')}}" class="nav-link">Productos</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a href="apps-projects-create" class="nav-link">Create Project</a>
+                                            <a href="apps-projects-create" class="nav-link">Manillas</a>
                                         </li>
                                     </ul>
                                 </div>
