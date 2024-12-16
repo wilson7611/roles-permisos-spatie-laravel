@@ -47,10 +47,16 @@
                                             <i class="ri-more-fill align-middle"></i>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">
-                                            <li><a href="#!" class="dropdown-item"><i class="ri-eye-fill align-bottom me-2 text-muted"></i> Ver</a></li>
-                                            <li><a href="{{route('roles.edit', $role)}}"" class="dropdown-item edit-item-btn"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Editar</a></li>
+                                            
                                             <li>
-                                                <a class="dropdown-item remove-item-btn">
+                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editarRoles-{{$role->id}}" data-bs-whatever="{{$role->name}}">Editar Roles</button>
+    
+                                            </li>
+                                            <li>
+                                                <button data-bs-toggle="modal" data-bs-target="#asignarPermiso-{{$role->id}}" class="dropdown-item edit-item-btn"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i>Asignar Permisos</button>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item remove-item-btn" data-bs-toggle="modal" data-bs-target="#eliminarRol-{{$role->id}}">
                                                     <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Eliminar
                                                 </a>
                                             </li>
@@ -58,6 +64,28 @@
                                     </div>
                                 </td>
                             </tr>
+                            @include('gestion.roles.edit')
+                            
+                            <div class="modal fade" id="eliminarRol-{{$role->id}}" tabindex="-1" aria-labelledby="eliminarRol" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="eliminarRol-{{$role->id}}">Mensaje de confirmación</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            {{ $role->name }}
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                            <form action="{{ route('roles.destroy',['role'=>$role->id]) }}" method="post">
+                                                @method('DELETE')
+                                                @csrf
+                                                <button type="submit" class="btn btn-danger">Confirmar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             @empty
                                 <span>No hay datos...</span>
                             @endforelse

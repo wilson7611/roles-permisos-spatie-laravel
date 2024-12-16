@@ -15,8 +15,8 @@ class RoleController extends Controller
     public function index()
     {
         $roles = Role::all();
-
-        return view('gestion.roles.index', compact('roles'));
+        $permisos =Permission::all();
+        return view('gestion.roles.index', compact('roles', 'permisos'));
     }
 
     /**
@@ -65,9 +65,14 @@ class RoleController extends Controller
      */
     public function update(Request $request, Role $role)
     {
-        $role->permissions()->sync($request->permisos);
+        try {
+            $role->permissions()->sync($request->permisos);
 
-        return redirect()->route('roles.edit', $role);
+            return redirect()->route('roles.index', $role)->with('success', 'Permisos Actualizados exitosamente');
+        } catch (\Exception $e) {
+            return redirect()->route('roles.index', $role)->with('error', 'Error al Actualizar permisos', $e->getMessage());
+        }
+        
     }
 
     /**
