@@ -30,13 +30,14 @@
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th>Imagen</th>
                                 <th>Categoria</th>
                                 <th>Nombre</th>
                                 <th>Description</th>
                                 <th>Stock</th>
                                 <th>Precio</th>
                                 <th>Estado</th>
-                                <th>Imagen</th>
+                                
                                 <th><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#nuevoProducto">
                                     Nuevo
                                     </button></th>
@@ -46,6 +47,13 @@
                             @forelse ($products as $product)
                             <tr>
                                 <td>{{$product->id}}</td>
+                                <td>
+                                    @if (file_exists(public_path('storage/' . $product->image)))
+                                     <img src="{{ asset('storage/' . $product->image) }}" alt="{{$product->name}}" width="50">  
+                                   @else
+                                    <img src="{{ asset('assets/images/users/deafult-user.jpg') }}" alt="{{$product->name}}" width="50">
+                                   @endif
+                                </td>
                                 <td>{{$product->categoria->name}}</td>
                                 <td>{{$product->name}}</td>
                                 <td>{{$product->description}}</td>
@@ -58,13 +66,7 @@
                                         <span class="badge bg-danger">Inactivo</span>
                                     @endif
                                 </td>
-                                <td>
-                                    @if (file_exists(public_path('storage/' . $product->image)))
-                                     <img src="{{ asset('storage/' . $product->image) }}" alt="{{$product->name}}" width="50">  
-                                   @else
-                                    <img src="{{ asset('assets/images/users/deafult-user.jpg') }}" alt="{{$product->name}}" width="50">
-                                   @endif
-                                </td>
+                                
                                 
                                 
                                 <td>

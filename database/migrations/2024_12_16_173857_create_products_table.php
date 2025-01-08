@@ -23,6 +23,10 @@ return new class extends Migration
             $table->foreign('category_id')->references('id')->on('categories')
             ->onUpdate('cascade')
             ->onDelete('cascade');
+            $table->unsignedBigInteger('brazalet_id')->nullable();
+            $table->foreign('brazalet_id')->references('id')->on('brazalets')
+            ->onUpdate('cascade')
+            ->onDelete('cascade');
             $table->timestamps();
         });
     }
