@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('brazalets', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('description')->nullable();
+            $table->decimal('price_brazalete', 10,2)->default(0);
+            $table->integer('status')->default(1);
             $table->timestamps();
         });
     }

@@ -53,4 +53,4 @@ Route::resource('products', ProductController::class);
 Route::delete('product/estado/{product}', [ProductController::class, 'estado'])->name('product/estado');
 
 Route::resource('brazalets', BrazaletController::class);
-Route::delete('brazalet/estado/{brazalet}', [ProductController::class, 'estado'])->name('brazalet/estado');
+Route::delete('brazalet/estado/{brazalet}', [BrazaletController::class, 'estado'])->name('brazalet/estado');

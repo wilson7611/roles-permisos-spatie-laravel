@@ -92,7 +92,7 @@
                                             <a href="{{route('products.index')}}" class="nav-link">Productos</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a href="apps-projects-create" class="nav-link">Manillas</a>
+                                            <a href="{{route('brazalets.index')}}" class="nav-link">Manillas</a>
                                         </li>
                                     </ul>
                                 </div>
